@@ -1,0 +1,10 @@
+/build/
+/.bundle/
+/vendor/
+/pkg/
+/coverage/
+/.yardoc/
+*.gem
+*.log
+.env
+.env.*

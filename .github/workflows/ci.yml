@@ -1,0 +1,26 @@
+name: offline-workflow-tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Prepare native dependencies and install the exact gem bundle
+        timeout-minutes: 8
+        run: docker build --tag gettext-workbench-test .
+      - name: Test offline as the unprivileged image user
+        timeout-minutes: 4
+        run: docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 256 --memory 1g --cpus 2 --tmpfs /tmp:rw,nosuid,nodev,size=512m --env HOME=/tmp --workdir /opt/workbench gettext-workbench-test bundle exec ruby test/run.rb
+      - name: Assert offline demonstration from source
+        timeout-minutes: 2
+        run: docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 256 --memory 1g --cpus 2 --tmpfs /tmp:rw,nosuid,nodev,size=512m --env HOME=/tmp --workdir /opt/workbench gettext-workbench-test bundle exec ruby bin/catalog_workbench demo --assert
+      - name: Exercise installed gem outside checkout
+        timeout-minutes: 2
+        run: docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 256 --memory 1g --cpus 2 --tmpfs /tmp:rw,nosuid,nodev,size=512m --env HOME=/tmp gettext-workbench-test catalog_workbench demo --assert

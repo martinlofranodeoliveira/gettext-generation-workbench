@@ -1,0 +1,59 @@
+#!/usr/local/bin/ruby
+require "tmpdir"
+require_relative "../lib/gettext_generation_workbench"
+
+W = GettextGenerationWorkbench
+
+def read_input(path)
+  GettextGenerationWorkbench.read(path).force_encoding(Encoding::UTF_8)
+end
+
+begin
+  command = ARGV.shift
+  case command
+  when "demo"
+    W.fail!("E_ARGUMENT") unless ARGV.empty? || ARGV == ["--assert"]
+    W::Demo.run(assert: ARGV == ["--assert"])
+  when "extract", "merge"
+    Dir.mktmpdir("gettext-workbench-cli-") do |dir|
+      wb = W::Workbench.new(File.join(dir, "store"))
+      if command == "extract"
+        W.fail!("E_ARGUMENT") unless ARGV.length == 1
+        STDOUT.write(wb.extract(source: read_input(ARGV[0])))
+      else
+        W.fail!("E_ARGUMENT") unless ARGV.length == 3
+        puts W.canonical(wb.merge(locale: ARGV[0], catalog: read_input(ARGV[1]), template: read_input(ARGV[2])))
+      end
+    end
+  when "compile"
+    W.fail!("E_ARGUMENT") unless ARGV.length.between?(3, 18)
+    root, source_path, *specs = ARGV
+    catalogs = {}
+    specs.each do |spec|
+      locale, path = spec.split("=", 2)
+      W.fail!("E_ARGUMENT") unless path && !catalogs.key?(locale)
+      catalogs[locale] = read_input(path)
+    end
+    puts W.canonical(W::Workbench.new(root).compileGeneration(source: read_input(source_path), catalogs: catalogs))
+  when "render", "inspect"
+    W.fail!("E_ARGUMENT") unless ARGV.length == 2
+    wb = W::Workbench.new(ARGV[0])
+    result = command == "render" ? wb.renderFixture(locale: ARGV[1]) : wb.inspectGeneration(locale: ARGV[1])
+    puts W.canonical(result)
+  when "help", "--help", nil
+    puts "catalog_workbench demo [--assert]"
+    puts "catalog_workbench extract SOURCE.rb"
+    puts "catalog_workbench merge LOCALE CATALOG.po TEMPLATE.pot"
+    puts "catalog_workbench compile STORE SOURCE.rb LOCALE=CATALOG.po [LOCALE=CATALOG.po]"
+    puts "catalog_workbench render STORE LOCALE"
+    puts "catalog_workbench inspect STORE LOCALE"
+  else
+    W.fail!("E_ARGUMENT")
+  end
+rescue W::Error => e
+  STDERR.puts JSON.generate("error" => e.code)
+  exit 2
+rescue StandardError
+  STDERR.puts JSON.generate("error" => "E_OPERATION")
+  exit 2
+end

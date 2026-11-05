@@ -1,0 +1,49 @@
+PATH
+  remote: .
+  specs:
+    gettext-generation-workbench (0.1.0)
+      gettext (= 3.5.2)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    erubi (1.13.1)
+    fiddle (1.1.8)
+    forwardable (1.4.0)
+    gettext (3.5.2)
+      erubi
+      locale (>= 2.0.5)
+      prime
+      racc
+      text (>= 1.3.0)
+    locale (2.1.5)
+      fiddle
+    prime (0.1.4)
+      forwardable
+      singleton
+    racc (1.8.1)
+    singleton (0.3.0)
+    text (1.3.1)
+
+PLATFORMS
+  ruby
+  x86_64-linux
+
+DEPENDENCIES
+  gettext (= 3.5.2)
+  gettext-generation-workbench!
+
+CHECKSUMS
+  erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
+  fiddle (1.1.8) sha256=7fa8ee3627271497f3add5503acdbc3f40b32f610fc1cf49634f083ef3f32eee
+  forwardable (1.4.0) sha256=f1cd40cc9812937980e1c76f1aa053660990a7c9b6a98fc37d945468afcce838
+  gettext (3.5.2) sha256=ada02c59aa7e9f56bd2522faedaed16421dd2f3ddb5fe28628c0be5abcbf3c74
+  gettext-generation-workbench (0.1.0)
+  locale (2.1.5) sha256=1c6803e8aa6bdb2c29e91945d095050601bf6d58474993575adf6f3b89b32ef4
+  prime (0.1.4) sha256=4d755ebf7c2994a6f3a3fee0d072063be3fff2d4042ebff6cd5eebd4747a225e
+  racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
+  singleton (0.3.0) sha256=83ea1bca5f4aa34d00305ab842a7862ea5a8a11c73d362cb52379d94e9615778
+  text (1.3.1) sha256=2fbbbc82c1ce79c4195b13018a87cbb00d762bda39241bb3cdc32792759dd3f4
+
+BUNDLED WITH
+   2.6.9

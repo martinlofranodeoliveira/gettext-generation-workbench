@@ -1,0 +1,12 @@
+build
+.git
+.env
+.env.*
+.bundle
+vendor
+pkg
+coverage
+.yardoc
+*.gem
+*.log
+__pycache__
